@@ -46,7 +46,7 @@ function canvasDraw(imgSrc) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         console.log(img.height, img.width);
 
-        //ctx.drawImage(img, 0, 0, canvas.width, this.height * (canvas.width / this.width));
+        ctx.drawImage(img, 0, 0, canvas.width, this.height * (canvas.width / this.width));
 
         // Canvas上にテキストを表示
         addText();
