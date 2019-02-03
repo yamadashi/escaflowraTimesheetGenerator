@@ -1,12 +1,10 @@
 var file = document.getElementById('file');
 var canvas = document.getElementById('canvas');
-var canvasWidth = 400;
-var canvasHeight = 300;
 var uploadImgSrc;
 
 // Canvasの準備
-canvas.width = canvasWidth;
-canvas.height = canvasHeight;
+canvas.width = 0;
+canvas.height = 0;
 var ctx = canvas.getContext('2d');
 
 function loadLocalImage(e) {
@@ -14,7 +12,7 @@ function loadLocalImage(e) {
     var fileData = e.target.files[0];
 
     // 画像ファイル以外は処理を止める
-    if(!fileData.type.match('image.*')) {
+    if (!fileData.type.match('image.*')) {
         alert('画像を選択してください');
         return;
     }
@@ -22,7 +20,7 @@ function loadLocalImage(e) {
     // FileReaderオブジェクトを使ってファイル読み込み
     var reader = new FileReader();
     // ファイル読み込みに成功したときの処理
-    reader.onload = function() {
+    reader.onload = function () {
         // Canvas上に表示する
         uploadImgSrc = reader.result;
         canvasDraw();
@@ -36,14 +34,19 @@ file.addEventListener('change', loadLocalImage, false);
 
 // Canvas上に画像を表示する
 function canvasDraw(imgSrc) {
-    // canvas内の要素をクリアする
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
     // Canvas上に画像を表示
     var img = new Image();
     img.src = uploadImgSrc;
-    img.onload = function() {
-        ctx.drawImage(img, 0, 0, canvasWidth, this.height * (canvasWidth / this.width));
+
+    img.onload = function () {
+        // canvas内の要素をクリアする
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        console.log(img.height, img.width);
+
+        //ctx.drawImage(img, 0, 0, canvas.width, this.height * (canvas.width / this.width));
 
         // Canvas上にテキストを表示
         addText();
@@ -67,5 +70,5 @@ function addText() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#002B69';
-    ctx.fillText('株式会社TAM', 80, 25);
+    ctx.fillText('ういちゃんぺろぺろ', 80, 25);
 }
