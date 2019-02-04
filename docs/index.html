@@ -1,5 +1,25 @@
+<head>
+    <title>エスカフローラ シフト画像ジェネレーター</title>
+</head>
+
 <body>
-    <div class="upload"><input type="file" name="file" id="file"></div>
+    <h1>エスカフローラ シフト画像ジェネレーター</h1>
+    
+    <div id="cast_shift" style="display:none">
+        名前 <input type="text" name="cast_name">
+        時間 <input type="time" name="begin">~<input type="time" name="end">
+        </br>
+    </div>
+
+    日付 <input id="date" type="text">
+    </br>
+    </br>
+    <div id="cast_tl"></div>
+    <input id="add_button" type="button" value="追加">
+    </br>
+    </br>
+    <input id="gen_button" type="button" value="生成">
+
     <canvas id="canvas"></canvas>
     <div id="result"></div>
 

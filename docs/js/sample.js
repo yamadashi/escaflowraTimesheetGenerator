@@ -1,60 +1,53 @@
-var file = document.getElementById('file');
 var canvas = document.getElementById('canvas');
+var input_form = document.getElementById('input_form');
+var gen_button = document.getElementById('gen_button');
 var uploadImgSrc;
+
+
+var cast_tl = document.getElementById("cast_tl");
+const cast_shift = document.getElementById("cast_shift");
+function clone_form() {
+    var new_cast_shift = cast_shift.cloneNode(true);
+    new_cast_shift.style.display = 'inline';
+    cast_tl.appendChild(new_cast_shift);
+}
+clone_form();
+
+var add_button = document.getElementById("add_button");
+add_button.addEventListener('click', clone_form);
+
 
 // Canvasの準備
 canvas.width = 0;
 canvas.height = 0;
 var ctx = canvas.getContext('2d');
+canvas.style.display = "none"; //canvasから画像を生成するがcanvas自体は表示しない
 
-function loadLocalImage(e) {
-    // ファイル情報を取得
-    var fileData = e.target.files[0];
+function generateImage() {
 
-    // 画像ファイル以外は処理を止める
-    if (!fileData.type.match('image.*')) {
-        alert('画像を選択してください');
-        return;
-    }
-
-    // FileReaderオブジェクトを使ってファイル読み込み
-    var reader = new FileReader();
-    // ファイル読み込みに成功したときの処理
-    reader.onload = function () {
-        // Canvas上に表示する
-        uploadImgSrc = reader.result;
-        canvasDraw();
-    }
-    // ファイル読み込みを実行
-    reader.readAsDataURL(fileData);
+    imageDraw();
 }
 
 // ファイルが指定された時にloadLocalImage()を実行
-file.addEventListener('change', loadLocalImage, false);
+gen_button.addEventListener('click', generateImage, false);
 
 // Canvas上に画像を表示する
-function canvasDraw(imgSrc) {
+function imageDraw(imgSrc) {
 
     // Canvas上に画像を表示
     var img = new Image();
     img.src = uploadImgSrc;
 
     img.onload = function () {
-        // canvas内の要素をクリアする
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        console.log(img.height, img.width);
-
         ctx.drawImage(img, 0, 0, canvas.width, this.height * (canvas.width / this.width));
 
-        // Canvas上にテキストを表示
-        addText();
-
-        // canvasを画像に変換
-        var data = canvas.toDataURL();
+        //編集
 
         // 画像として出力
+        var data = canvas.toDataURL();
         var outputImg = document.createElement('img');
         outputImg.src = data;
         document.getElementById('result').appendChild(outputImg);
