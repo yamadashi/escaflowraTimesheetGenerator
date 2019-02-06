@@ -38,6 +38,7 @@ function generateImage() {
 
     // Canvas上に画像を表示
     var img = new Image();
+    img.crossOrigin = 'Anonymous';
     img.onload = function () {
         canvas.width = img.width;
         canvas.height = img.height;
@@ -58,6 +59,7 @@ function generateImage() {
         //Canvasを画像として出力
         var data = canvas.toDataURL();
         var outputImg = document.createElement('img');
+        //outputImg.crossOrigin = 'anonymous';
         outputImg.src = data;
         document.getElementById('result').appendChild(outputImg);
     }
