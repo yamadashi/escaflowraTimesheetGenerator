@@ -1,3 +1,11 @@
+//TODO:
+//フォント、フォントサイズ
+//バーの長さが合わない（幅が均一ではないため）
+//Rectのぼかし(必要ない？)
+//バータイム対応(しないかも)
+//正しい画像に差し替え
+
+
 // Canvasの準備
 var canvas = document.getElementById('canvas');
 canvas.width = 0;
@@ -24,11 +32,11 @@ clone_form();
 const baseImageInfo = {
     size: {
         width: 800,
-        height: 960
+        height: 952
     },
     timelineArea: {
         top: 195,
-        bottom: 675,
+        bottom: 667,
         leftOffset: 100
     }
 }
@@ -61,7 +69,9 @@ function generateImage() {
         var outputImg = document.createElement('img');
         //outputImg.crossOrigin = 'anonymous';
         outputImg.src = data;
-        document.getElementById('result').appendChild(outputImg);
+        var result = document.getElementById('result');
+        if (result.firstChild) result.removeChild(result.firstChild);
+        result.appendChild(outputImg);
     }
     img.src = "base.jpg";
 
@@ -102,20 +112,20 @@ function putDate() {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(document.getElementById("date").nodeValue, baseImageInfo.size.width / 2, baseImageInfo.size.height / 12);
+    ctx.fillText(document.getElementById("date").value, baseImageInfo.size.width / 2, baseImageInfo.size.height / 12);
 }
 
 //名前とタイムラインを表示
 function putNameAndLine(xpos, castInfo) {
     //名前
-    ctx.font = "27px 'MS Pゴシック'"; //フォントサイズは制御しないといけないかも
+    ctx.font = "27px 'MS Pゴシック'";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillStyle = '#375b8b';
     ctx.fillText(castInfo.name, xpos, baseImageInfo.timelineArea.top);
     //タイムライン
     const barWidth = (baseImageInfo.size.width - baseImageInfo.timelineArea.leftOffset) / 30;
-    const lengthPerMinute = (baseImageInfo.timelineArea.bottom - baseImageInfo.timelineArea.bottom) / (12 * 60);
+    const lengthPerMinute = (baseImageInfo.timelineArea.bottom - baseImageInfo.timelineArea.top) / (12 * 60);
     const barTop = baseImageInfo.timelineArea.top + (timestrToMinutes(castInfo.begin) - 12 * 60) * lengthPerMinute;
     const barHeight = (timestrToMinutes(castInfo.end) - timestrToMinutes(castInfo.begin)) * lengthPerMinute;
     ctx.fillStyle = '#01aed9';
@@ -124,5 +134,8 @@ function putNameAndLine(xpos, castInfo) {
 
 function timestrToMinutes(str) {
     const time = str.split(':');
-    return parseInt(time[0]) * 60 + parseInt(time[1]);
+    const hour = parseInt(time[0]);
+    const minute = parseInt(time[1]);
+    if (hour >= 24 || hour < 12) return 24 * 60; //営業時間外を指定した場合
+    return hour * 60 + minute;
 }
