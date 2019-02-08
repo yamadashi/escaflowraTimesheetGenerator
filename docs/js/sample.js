@@ -1,8 +1,5 @@
 //TODO:
-//フォント、フォントサイズ
-//バーの長さが合わない（幅が均一ではないため）
-//Rectのぼかし(必要ない？)
-//バータイム対応(しないかも)
+//フォント、フォントサイズ　スケーラブル
 //正しい画像に差し替え
 
 
@@ -32,13 +29,31 @@ clone_form();
 const baseImageInfo = {
     size: {
         width: 800,
-        height: 952
+        height: 960
     },
     timelineArea: {
         top: 195,
-        bottom: 667,
+        bottom: 680,
         leftOffset: 100
-    }
+    },
+    //幅が均一でないためテーブルで位置を保持
+    timePosTable : new Map(
+        [
+            [12, 195],
+            [13, 237],
+            [14, 280],
+            [15, 318],
+            [16, 360],
+            [17, 400],
+            [18, 440],
+            [19, 480],
+            [20, 519],
+            [21, 559],
+            [22, 599],
+            [23, 639],
+            [24, 680]
+        ]
+    )
 }
 
 var gen_button = document.getElementById('gen_button');
@@ -125,17 +140,24 @@ function putNameAndLine(xpos, castInfo) {
     ctx.fillText(castInfo.name, xpos, baseImageInfo.timelineArea.top);
     //タイムライン
     const barWidth = (baseImageInfo.size.width - baseImageInfo.timelineArea.leftOffset) / 30;
-    const lengthPerMinute = (baseImageInfo.timelineArea.bottom - baseImageInfo.timelineArea.top) / (12 * 60);
-    const barTop = baseImageInfo.timelineArea.top + (timestrToMinutes(castInfo.begin) - 12 * 60) * lengthPerMinute;
-    const barHeight = (timestrToMinutes(castInfo.end) - timestrToMinutes(castInfo.begin)) * lengthPerMinute;
+    const barTop = calcPos(castInfo.begin);
+    const barBottom = calcPos(castInfo.end);
     ctx.fillStyle = '#01aed9';
-    ctx.fillRect(xpos - barWidth / 2, barTop, barWidth, barHeight);
+    ctx.fillRect(xpos - barWidth / 2, barTop, barWidth, barBottom - barTop);
 }
 
-function timestrToMinutes(str) {
-    const time = str.split(':');
-    const hour = parseInt(time[0]);
-    const minute = parseInt(time[1]);
-    if (hour >= 24 || hour < 12) return 24 * 60; //営業時間外を指定した場合
-    return hour * 60 + minute;
+function calcPos(timeStr) {
+    //数値に変換して範囲外の場合は補正する
+    const time = timeStr.split(':');
+    var hour = parseInt(time[0]);
+    var minute = parseInt(time[1]);
+    if (hour < 12 || hour >= 24) {
+        hour = 24;
+        minute = 0;
+    }
+    
+    var h_pos = baseImageInfo.timePosTable.get(hour);
+    var h_pos_next = baseImageInfo.timePosTable.get(hour+1);
+    if (!h_pos_next) return h_pos; //hourが24のときh_pos_nextはundefined
+    return h_pos + minute * (h_pos_next - h_pos) / 60;
 }
