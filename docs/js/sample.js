@@ -1,6 +1,5 @@
 //TODO:
 //フォント、フォントサイズ　スケーラビリティ
-//フォームの削除ボタン
 
 
 // Canvasの準備
@@ -17,6 +16,12 @@ const input_form = document.getElementById("input_form");
 function clone_form() {
     var new_form = input_form.cloneNode(true);
     new_form.style.display = 'inline';
+    //フォーム消去イベント
+    var delete_button = getElementsWithAttribute(new_form, "name", "delete")[0];
+    delete_button.addEventListener('click', function(){
+        timeline.removeChild(new_form);
+    });
+
     timeline.appendChild(new_form);
 }
 var add_button = document.getElementById("add_button");
@@ -33,11 +38,11 @@ const baseImageInfo = {
     },
     timelineArea: {
         top: 195,
-        bottom: 680,
+        bottom: 677,
         leftOffset: 100
     },
     //幅が均一でないためテーブルで位置を保持
-    timePosTable : new Map(
+    timePosTable: new Map(
         [
             [12, 195],
             [13, 237],
@@ -51,7 +56,7 @@ const baseImageInfo = {
             [21, 559],
             [22, 599],
             [23, 639],
-            [24, 680]
+            [24, 677]
         ]
     )
 }
@@ -123,7 +128,7 @@ function getElementsWithAttribute(parent, attributeName, value) {
 
 //日付を表示
 function putDate() {
-    ctx.font = "40px 'MS Pゴシック'";
+    ctx.font = "40px 'ヒラギノ角ゴ W3'";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
@@ -133,7 +138,7 @@ function putDate() {
 //名前とタイムラインを表示
 function putNameAndLine(xpos, castInfo) {
     //名前
-    ctx.font = "27px 'MS Pゴシック'";
+    ctx.font = "27px 'ヒラギノ明朝 W6'";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillStyle = '#375b8b';
@@ -155,9 +160,9 @@ function calcPos(timeStr) {
         hour = 24;
         minute = 0;
     }
-    
+
     var h_pos = baseImageInfo.timePosTable.get(hour);
-    var h_pos_next = baseImageInfo.timePosTable.get(hour+1);
+    var h_pos_next = baseImageInfo.timePosTable.get(hour + 1);
     if (!h_pos_next) return h_pos; //hourが24のときh_pos_nextはundefined
     return h_pos + minute * (h_pos_next - h_pos) / 60;
 }
