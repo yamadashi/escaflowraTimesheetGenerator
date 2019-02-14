@@ -1,11 +1,5 @@
-//TODO:
-//フォント、フォントサイズ　スケーラビリティ
-
-
 // Canvasの準備
 var canvas = document.getElementById('canvas');
-canvas.width = 0;
-canvas.height = 0;
 var ctx = canvas.getContext('2d');
 canvas.style.display = "none"; //canvasから画像を生成するがcanvas自体は表示しない
 
@@ -18,7 +12,7 @@ function clone_form() {
     new_form.style.display = 'inline';
     //フォーム消去イベント
     var delete_button = getElementsWithAttribute(new_form, "name", "delete")[0];
-    delete_button.addEventListener('click', function(){
+    delete_button.addEventListener('click', function () {
         timeline.removeChild(new_form);
     });
 
@@ -81,7 +75,7 @@ function generateImage() {
         var eachWidth = (baseImageInfo.size.width - baseImageInfo.timelineArea.leftOffset) / shiftInfo.length;
         for (var i = 0; i < shiftInfo.length; i++) {
             var xpos = baseImageInfo.timelineArea.leftOffset + eachWidth * (i + 1 / 2);
-            putNameAndLine(xpos, shiftInfo[i]);
+            putNameAndLine(xpos, shiftInfo[i], shiftInfo.length);
         }
 
         //Canvasを画像として出力
@@ -94,7 +88,6 @@ function generateImage() {
         result.appendChild(outputImg);
     }
     img.src = "base.jpg";
-
 }
 gen_button.addEventListener('click', generateImage, false);
 
@@ -128,17 +121,24 @@ function getElementsWithAttribute(parent, attributeName, value) {
 
 //日付を表示
 function putDate() {
-    ctx.font = "40px 'ヒラギノ角ゴ W3'";
+    const fontSize = 40;
+    const lineHeight = fontSize * 1.2;
+    ctx.font = fontSize + "px 'ヒラギノ角ゴ W3'";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
-    ctx.fillText(document.getElementById("date").value, baseImageInfo.size.width / 2, baseImageInfo.size.height / 12);
+    const lines = document.getElementById("date").value.replace(/\n+$/,'').split('\n');
+    for (var i = 0; i < lines.length; i++) {
+        console.log((i - (lines.length-1)/2)*lineHeight);
+        ctx.fillText(lines[i], baseImageInfo.size.width / 2, baseImageInfo.size.height / 12 + (i - (lines.length-1)/2)*lineHeight);
+    }
 }
 
 //名前とタイムラインを表示
-function putNameAndLine(xpos, castInfo) {
+function putNameAndLine(xpos, castInfo, number) {
     //名前
-    ctx.font = "27px 'ヒラギノ明朝 W6'";
+    const fontSize = 27 - (number > 5 ? 2 * (number - 5) : 0);
+    ctx.font = fontSize + "px 'ヒラギノ明朝 W6'";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
     ctx.fillStyle = '#375b8b';
