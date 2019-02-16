@@ -123,7 +123,7 @@ function getElementsWithAttribute(parent, attributeName, value) {
 function putDate() {
     const fontSize = 40;
     const lineHeight = fontSize * 1.2;
-    ctx.font = fontSize + "px 'ヒラギノ角ゴ W3'";
+    ctx.font = fontSize + "px 'ヒラギノ明朝 W6'";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
