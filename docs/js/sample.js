@@ -1,3 +1,5 @@
+var isBarTime = false;
+
 // Canvasの準備
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
@@ -24,34 +26,66 @@ clone_form();
 
 
 //画像情報
-const baseImageInfo = {
-    size: {
-        width: 800,
-        height: 960
-    },
-    timelineArea: {
-        top: 195,
-        bottom: 677,
-        leftOffset: 100
-    },
-    //幅が均一でないためテーブルで位置を保持
-    timePosTable: new Map(
-        [
-            [12, 195],
-            [13, 237],
-            [14, 280],
-            [15, 318],
-            [16, 360],
-            [17, 400],
-            [18, 440],
-            [19, 480],
-            [20, 519],
-            [21, 559],
-            [22, 599],
-            [23, 639],
-            [24, 677]
-        ]
-    )
+var baseImageInfo = null;
+function initBaseImageInfo() {
+    if (isBarTime) {
+        baseImageInfo = {
+            size: {
+                width: 480,
+                height: 640
+            },
+            timelineArea: {
+                top: 212,
+                bottom: 437,
+                leftOffset: 70
+            },
+            //幅が均一でないためテーブルで位置を保持
+            timePosTable: new Map(
+                [
+                    [22, 212],
+                    [23, 240],
+                    [0, 270],
+                    [1, 297],
+                    [2, 326],
+                    [3, 355],
+                    [4, 383],
+                    [5, 410],
+                    [6, 437]
+                ]
+            )
+        }
+    }
+    else {
+        baseImageInfo = {
+            size: {
+                width: 800,
+                height: 960
+            },
+            timelineArea: {
+                top: 195,
+                bottom: 677,
+                leftOffset: 100
+            },
+            //幅が均一でないためテーブルで位置を保持
+            timePosTable: new Map(
+                [
+                    [12, 195],
+                    [13, 237],
+                    [14, 280],
+                    [15, 318],
+                    [16, 360],
+                    [17, 400],
+                    [18, 440],
+                    [19, 480],
+                    [20, 519],
+                    [21, 559],
+                    [22, 599],
+                    [23, 639],
+                    [24, 677]
+                ]
+            )
+        }
+    }
 }
 
 //画像生成
@@ -61,14 +95,15 @@ function generateImage() {
     var img = new Image();
     img.crossOrigin = 'Anonymous';
     img.onload = function () {
+        //isBarTimeに応じて背景画像情報の初期化
+        initBaseImageInfo();
+        //描画準備
         canvas.width = img.width;
         canvas.height = img.height;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
         //日付を表示
         putDate();
-
         //名前とラインを表示
         var shiftInfo = getShiftInfo();
         var eachWidth = (baseImageInfo.size.width - baseImageInfo.timelineArea.leftOffset) / shiftInfo.length;
@@ -76,7 +111,6 @@ function generateImage() {
             var xpos = baseImageInfo.timelineArea.leftOffset + eachWidth * (i + 1 / 2);
             putNameAndLine(xpos, shiftInfo[i], shiftInfo.length);
         }
-
         //Canvasを画像として出力
         var data = canvas.toDataURL();
         var outputImg = document.createElement('img');
@@ -85,9 +119,44 @@ function generateImage() {
         if (result.firstChild) result.removeChild(result.firstChild);
         result.appendChild(outputImg);
     }
-    img.src = "base.jpg";
+    isBarTime = document.getElementById('barTime').checked;
+    img.src = isBarTime ? "base_bar_time.jpg" : "base.jpg";
 }
 gen_button.addEventListener('click', generateImage, false);
+
+//日付を表示
+function putDate() {
+    const date = document.getElementById("date").value.replace(/-/g , '/');
+    const subtext = document.getElementById("subtext").value;
+    //フォントサイズ
+    const dateFontSize = isBarTime ? 25 : (subtext != "" ? 45 : 55);
+    const textFontSize = dateFontSize * 0.85;
+    const lineHeight = dateFontSize * 1.2;
+    //フォントの決定
+    var fontName = getSelectedValue(document.getElementsByName("date-font"));
+    //contextの指定
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#ffffff';
+
+    var stdPos;
+    if (isBarTime) {
+        stdPos = {
+            x: baseImageInfo.size.width / 4,
+            y: baseImageInfo.size.height / 13
+        };
+    } else {
+        stdPos = {
+            x: baseImageInfo.size.width / 2,
+            y: baseImageInfo.size.height / 11
+        };
+    }
+    //日付
+    ctx.font = dateFontSize + "px '" + fontName + "'";
+    ctx.fillText(date, stdPos.x, stdPos.y - lineHeight * (subtext != "") / 2);
+    ctx.font = textFontSize + "px '" + fontName + "'";
+    ctx.fillText(subtext, stdPos.x, stdPos.y + lineHeight * (subtext != "") / 2);
+}
 
 //入力フォームからシフト情報を受け取る
 function getShiftInfo() {
@@ -117,25 +186,6 @@ function getElementsWithAttribute(parent, attributeName, value) {
     return elements;
 }
 
-//日付を表示
-function putDate() {
-    const lines = document.getElementById("date").value.replace(/\n+$/,'').split('\n');
-    //フォントサイズ
-    const fontSize = lines.length >= 2 ? 40 : 50;
-    const lineHeight = fontSize * 1.2;
-    //フォントの決定
-    var fontName = getSelectedValue(document.getElementsByName("date-font"));
-    //contextの指定
-    ctx.font = fontSize + "px '" + fontName + "'";
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#ffffff';
-    //改行に対応
-    for (var i = 0; i < lines.length; i++) {
-        ctx.fillText(lines[i], baseImageInfo.size.width / 2, baseImageInfo.size.height / 11 + (i - (lines.length-1)/2)*lineHeight);
-    }
-}
-
 function getSelectedValue(elements) {
     //HTMLCollectionなのでforeachが使えない...
     for (var i = 0; i < elements.length; i++) {
@@ -149,14 +199,14 @@ function getSelectedValue(elements) {
 //名前とタイムラインを表示
 function putNameAndLine(xpos, castInfo, number) {
     //名前
-    const fontSize = 27 - (number > 5 ? 2 * (number - 5) : 0);
+    const fontSize = (isBarTime ? 20 : 27) - (number > 5 ? 2 * (number - 5) : 0);
     ctx.font = fontSize + "px 'ヒラギノ明朝 W6'";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'bottom';
-    ctx.fillStyle = '#375b8b';
+    ctx.fillStyle = isBarTime ? '#ffffff' : '#375b8b';
     ctx.fillText(castInfo.name, xpos, baseImageInfo.timelineArea.top);
     //タイムライン
-    const barWidth = (baseImageInfo.size.width - baseImageInfo.timelineArea.leftOffset) / 30;
+    const barWidth = (baseImageInfo.size.width - baseImageInfo.timelineArea.leftOffset) / (isBarTime ? 25 : 30);
     const barTop = calcPos(castInfo.begin);
     const barBottom = calcPos(castInfo.end);
     ctx.fillStyle = '#01aed9';
@@ -164,16 +214,23 @@ function putNameAndLine(xpos, castInfo, number) {
 }
 
 function calcPos(timeStr) {
-    //数値に変換して範囲外の場合は補正する
+    //数値に変換して範囲外の場合は補正する(例外をどう処理するかは要検討)
     const time = timeStr.split(':');
     var hour = parseInt(time[0]);
     var minute = parseInt(time[1]);
-    if (hour < 12 || hour >= 24) {
-        hour = 24;
-        minute = 0;
+    if (isBarTime) {
+        if (hour >= 6 && hour < 22) {
+            hour = 6;
+            minute = 0;
+        }
+    } else {
+        if (hour < 12 || hour >= 24) {
+            hour = 24;
+            minute = 0;
+        }
     }
     var h_pos = baseImageInfo.timePosTable.get(hour);
     var h_pos_next = baseImageInfo.timePosTable.get(hour + 1);
-    if (!h_pos_next) return h_pos; //hourが24のときh_pos_nextはundefined
+    if (!h_pos_next) return h_pos; //undefined
     return h_pos + minute * (h_pos_next - h_pos) / 60;
 }
