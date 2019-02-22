@@ -1,5 +1,22 @@
 var isBarTime = false;
 
+//Webフォントのプリロード
+WebFont.load({
+    custom: {
+        families: ['BlackChancery'],
+        urls: ['../css/style.css']
+    },
+    loading: function() {
+        console.log('loading');
+    },
+    active: function() {
+        console.log('active');
+    },
+    inactive: function() {
+        console.log('inactive');
+    }
+});
+
 // Canvasの準備
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
