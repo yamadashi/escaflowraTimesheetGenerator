@@ -121,15 +121,15 @@ function getElementsWithAttribute(parent, attributeName, value) {
 
 //日付を表示
 function putDate() {
-    const fontSize = 40;
+    const fontSize = 50;
     const lineHeight = fontSize * 1.2;
-    ctx.font = fontSize + "px 'ヒラギノ明朝 W6'";
+    ctx.font = fontSize + "px BlackChancery";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
+    //改行に対応
     const lines = document.getElementById("date").value.replace(/\n+$/,'').split('\n');
     for (var i = 0; i < lines.length; i++) {
-        console.log((i - (lines.length-1)/2)*lineHeight);
         ctx.fillText(lines[i], baseImageInfo.size.width / 2, baseImageInfo.size.height / 12 + (i - (lines.length-1)/2)*lineHeight);
     }
 }
