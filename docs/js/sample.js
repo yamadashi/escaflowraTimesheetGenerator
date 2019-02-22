@@ -3,7 +3,6 @@ var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
 canvas.style.display = "none"; //canvasから画像を生成するがcanvas自体は表示しない
 
-
 //フォーム追加
 var timeline = document.getElementById("timeline");
 const input_form = document.getElementById("input_form");
@@ -24,7 +23,7 @@ add_button.addEventListener('click', clone_form);
 clone_form();
 
 
-//画像生成
+//画像情報
 const baseImageInfo = {
     size: {
         width: 800,
@@ -55,9 +54,9 @@ const baseImageInfo = {
     )
 }
 
+//画像生成
 var gen_button = document.getElementById('gen_button');
 function generateImage() {
-
     // Canvas上に画像を表示
     var img = new Image();
     img.crossOrigin = 'Anonymous';
@@ -81,7 +80,6 @@ function generateImage() {
         //Canvasを画像として出力
         var data = canvas.toDataURL();
         var outputImg = document.createElement('img');
-        //outputImg.crossOrigin = 'anonymous';
         outputImg.src = data;
         var result = document.getElementById('result');
         if (result.firstChild) result.removeChild(result.firstChild);
@@ -121,17 +119,31 @@ function getElementsWithAttribute(parent, attributeName, value) {
 
 //日付を表示
 function putDate() {
-    const fontSize = 50;
+    const lines = document.getElementById("date").value.replace(/\n+$/,'').split('\n');
+    //フォントサイズ
+    const fontSize = lines.length >= 2 ? 40 : 50;
     const lineHeight = fontSize * 1.2;
-    ctx.font = fontSize + "px BlackChancery";
+    //フォントの決定
+    var fontName = getSelectedValue(document.getElementsByName("date-font"));
+    //contextの指定
+    ctx.font = fontSize + "px '" + fontName + "'";
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
     //改行に対応
-    const lines = document.getElementById("date").value.replace(/\n+$/,'').split('\n');
     for (var i = 0; i < lines.length; i++) {
-        ctx.fillText(lines[i], baseImageInfo.size.width / 2, baseImageInfo.size.height / 12 + (i - (lines.length-1)/2)*lineHeight);
+        ctx.fillText(lines[i], baseImageInfo.size.width / 2, baseImageInfo.size.height / 11 + (i - (lines.length-1)/2)*lineHeight);
     }
+}
+
+function getSelectedValue(elements) {
+    //HTMLCollectionなのでforeachが使えない...
+    for (var i = 0; i < elements.length; i++) {
+        if (elements[i].checked) {
+            return elements[i].value;
+        }
+    }
+    return "";
 }
 
 //名前とタイムラインを表示
@@ -160,7 +172,6 @@ function calcPos(timeStr) {
         hour = 24;
         minute = 0;
     }
-
     var h_pos = baseImageInfo.timePosTable.get(hour);
     var h_pos_next = baseImageInfo.timePosTable.get(hour + 1);
     if (!h_pos_next) return h_pos; //hourが24のときh_pos_nextはundefined
