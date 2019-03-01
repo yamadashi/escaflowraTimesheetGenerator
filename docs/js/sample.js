@@ -6,13 +6,13 @@ WebFont.load({
         families: ['BlackChancery'],
         urls: ['../css/style.css']
     },
-    loading: function() {
+    loading: function () {
         console.log('loading');
     },
-    active: function() {
+    active: function () {
         console.log('active');
     },
-    inactive: function() {
+    inactive: function () {
         console.log('inactive');
     }
 });
@@ -143,36 +143,48 @@ gen_button.addEventListener('click', generateImage, false);
 
 //日付を表示
 function putDate() {
-    const date = document.getElementById("date").value.replace(/-/g , '/');
+    const date = document.getElementById("date").value.replace(/-/g, '/');
     const subtext = document.getElementById("subtext").value;
     //フォントサイズ
     const dateFontSize = isBarTime ? 25 : (subtext != "" ? 45 : 55);
     const textFontSize = dateFontSize * 0.85;
     const lineHeight = dateFontSize * 1.2;
     //フォントの決定
-    var fontName = getSelectedValue(document.getElementsByName("date-font"));
+    var fontName = [...document.getElementsByName("date-font")].filter(el => el.checked)[0].value;
     //contextの指定
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillStyle = '#ffffff';
 
-    var stdPos;
     if (isBarTime) {
-        stdPos = {
+        const textPos = {
             x: baseImageInfo.size.width / 4,
             y: baseImageInfo.size.height / 13
         };
+        const datePos = {
+            ...textPos,
+            x:7*textPos.x/8
+        };
+        const dateFontSize = 28;
+        const lineHeight = dateFontSize * 1.2;
+        ctx.font = dateFontSize + "px '" + fontName + "'";
+        ctx.fillText(date, datePos.x, datePos.y - lineHeight * (subtext != "") / 2);
+        const textFontSize = 21;
+        ctx.font = textFontSize + "px '" + fontName + "'";
+        ctx.fillText(subtext, textPos.x, textPos.y + lineHeight * (subtext != "") / 2);
     } else {
-        stdPos = {
+        var pos = {
             x: baseImageInfo.size.width / 2,
             y: baseImageInfo.size.height / 11
         };
+        const dateFontSize = subtext != "" ? 45 : 55;
+        const lineHeight = dateFontSize * 1.2;
+        ctx.font = dateFontSize + "px '" + fontName + "'";
+        ctx.fillText(date, pos.x, pos.y - lineHeight * (subtext != "") / 2);
+        const textFontSize = dateFontSize * 0.85;
+        ctx.font = textFontSize + "px '" + fontName + "'";
+        ctx.fillText(subtext, pos.x, pos.y + lineHeight * (subtext != "") / 2);
     }
-    //日付
-    ctx.font = dateFontSize + "px '" + fontName + "'";
-    ctx.fillText(date, stdPos.x, stdPos.y - lineHeight * (subtext != "") / 2);
-    ctx.font = textFontSize + "px '" + fontName + "'";
-    ctx.fillText(subtext, stdPos.x, stdPos.y + lineHeight * (subtext != "") / 2);
 }
 
 //入力フォームからシフト情報を受け取る
@@ -201,16 +213,6 @@ function getElementsWithAttribute(parent, attributeName, value) {
         elm = elm.nextElementSibling;
     }
     return elements;
-}
-
-function getSelectedValue(elements) {
-    //HTMLCollectionなのでforeachが使えない...
-    for (var i = 0; i < elements.length; i++) {
-        if (elements[i].checked) {
-            return elements[i].value;
-        }
-    }
-    return "";
 }
 
 //名前とタイムラインを表示
