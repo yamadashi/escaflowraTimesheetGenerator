@@ -6,34 +6,62 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="./css/style.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.2/css/bulma.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./css/style.css" />
 </head>
 
 <body>
-    <script type="text/javascript" src="js/sample.js" defer>
-    </script><script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-    
-    <h1>エスカフローラ シフト画像ジェネレーター</h1>
+    <section class="secction">
+        <div class="container">
+            <script type="text/javascript" src="js/sample.js" defer>
+            </script>
+            <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
 
-    <div id="input_form" style="display:none">
-        名前 <input type="text" name="cast_name"> <input type="button" value="消去" name="delete"><br/>
-        時間 <input type="time" name="begin">~<input type="time" name="end"><br/>
-        <br/>
-    </div>
+            <br/>
+            <h3 class="title">エスカフローラ シフト画像ジェネレーター</h1>
 
-    日付<br/>
-    <input type="date" id="date"><br/>
-    サブテキスト(任意)<br/>
-    <input type="text" id="subtext"><br/>
-    <input type="radio" name="date-font" value="BlackChancery" checked> BlackChancery
-    <input type="radio" name="date-font" value="ヒラギノ明朝 W6"> ヒラギノ明朝 <br/>
-    <br/>
-    <div id="timeline"></div>
-    <input id="add_button" type="button" value="追加"><br/>
-    <br/>
-    バータイム<input type="checkbox" id="barTime"><br/>
-    <input id="gen_button" type="button" value="生成">
+                <div id="input_form" style="display:none">
+                    <label class="label">名前</label>
+                    <input type="text" name="cast_name">
+                    <br/>
+                    <label class="label">時間</label>
+                    <input type="time" name="begin">
+                    ~
+                    <input type="time" name="end">
+                    <input type="button" class="button is-primary" value="消去" name="delete">
+                    <br/>
+                    <br/>
+                </div>
 
-    <canvas id="canvas"></canvas>
-    <div id="result"></div>
+                <label class="label">
+                    日付
+                    <br/>
+                    <input type="date" id="date">
+                    <br/> サブテキスト(任意)
+                    <br/>
+                    <input type="text" id="subtext">
+                </label>
+                BlackChancery
+                <input type="checkbox" id="black_chancery" checked>
+                <br/>
+                <br/>
+
+                <div id="timeline"></div>
+                <br/>
+                
+                <input id="add_button" class="button is-primary" type="button" value="追加">
+                <br/>
+                <br/>
+                
+                バータイム
+                <input type="checkbox" id="barTime">
+                <br/>
+                
+                <input id="gen_button" class="button is-primary" type="button" value="生成">
+
+                <canvas id="canvas"></canvas>
+                <div id="result"></div>
+        </div>
+    </section>
 </body>

@@ -150,7 +150,8 @@ function putDate() {
     const textFontSize = dateFontSize * 0.85;
     const lineHeight = dateFontSize * 1.2;
     //フォントの決定
-    var fontName = [...document.getElementsByName("date-font")].filter(el => el.checked)[0].value;
+    //var fontName = [...document.getElementsByName("date-font")].filter(el => el.checked)[0].value; //書き方かっこいいから残しておきたい
+    var fontName = document.getElementById('black_chancery').checked ? "BlackChancery" : "ヒラギノ明朝 W6";
     //contextの指定
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
