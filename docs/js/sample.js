@@ -132,14 +132,20 @@ function generateImage() {
         var data = canvas.toDataURL();
         var outputImg = document.createElement('img');
         outputImg.src = data;
-        var result = document.getElementById('result');
-        if (result.firstChild) result.removeChild(result.firstChild);
+        clearImage();
         result.appendChild(outputImg);
     }
     isBarTime = document.getElementById('barTime').checked;
     img.src = isBarTime ? "base_bar_time.jpg" : "base.jpg";
 }
 gen_button.addEventListener('click', generateImage, false);
+
+var clear_button = document.getElementById("clear_button");
+function clearImage() {
+    var result = document.getElementById('result');
+    if (result.firstChild) result.removeChild(result.firstChild);
+}
+clear_button.addEventListener('click', clearImage, false);
 
 //日付を表示
 function putDate() {
