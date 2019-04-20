@@ -151,7 +151,8 @@ function putDate() {
     const lineHeight = dateFontSize * 1.2;
     //フォントの決定
     //var fontName = [...document.getElementsByName("date-font")].filter(el => el.checked)[0].value; //書き方かっこいいから残しておきたい
-    var fontName = document.getElementById('black_chancery').checked ? "BlackChancery" : "ヒラギノ明朝 W6";
+    var dateFontName = document.getElementById('date_font').checked ? "BlackChancery" : "ヒラギノ明朝 W6";
+    var textFontName = document.getElementById('subtext_font').checked ? "BlackChancery" : "ヒラギノ明朝 W6";
     //contextの指定
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
@@ -168,10 +169,10 @@ function putDate() {
         };
         const dateFontSize = 28;
         const lineHeight = dateFontSize * 1.2;
-        ctx.font = dateFontSize + "px '" + fontName + "'";
+        ctx.font = dateFontSize + "px '" + dateFontName + "'";
         ctx.fillText(date, datePos.x, datePos.y - lineHeight * (subtext != "") / 2);
         const textFontSize = 21;
-        ctx.font = textFontSize + "px '" + fontName + "'";
+        ctx.font = textFontSize + "px '" + textFontName + "'";
         ctx.fillText(subtext, textPos.x, textPos.y + lineHeight * (subtext != "") / 2);
     } else {
         var pos = {
@@ -180,10 +181,10 @@ function putDate() {
         };
         const dateFontSize = subtext != "" ? 45 : 55;
         const lineHeight = dateFontSize * 1.2;
-        ctx.font = dateFontSize + "px '" + fontName + "'";
+        ctx.font = dateFontSize + "px '" + dateFontName + "'";
         ctx.fillText(date, pos.x, pos.y - lineHeight * (subtext != "") / 2);
         const textFontSize = dateFontSize * 0.85;
-        ctx.font = textFontSize + "px '" + fontName + "'";
+        ctx.font = textFontSize + "px '" + textFontName + "'";
         ctx.fillText(subtext, pos.x, pos.y + lineHeight * (subtext != "") / 2);
     }
 }
